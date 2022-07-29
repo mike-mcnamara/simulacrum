@@ -3,7 +3,16 @@ FROM node:16-alpine
 ENV NODE_ENV=development
 ENV npm_config_yes=true
 
-RUN apk --no-cache add --virtual .builds-deps build-base python3 bash
+RUN apk --no-cache add --virtual .builds-deps build-base python3 bash libnss3-tools
+
+RUN wget -O mkcert "https://dl.filippo.io/mkcert/latest?for=linux/amd64" \
+&& chmod +x mkcert \
+&& cp mkcert /usr/local/bin/mkcert \
+&& mkdir -p $HOME/.simulacrum/certs \
+&& cd $HOME/.simulacrum/certs \
+&& mkcert -install \
+&& cat /root/.local/share/mkcert/rootCA.pem >> /etc/ssl/certs/ca-certificates.crt \
+&& mkcert localhost
 
 WORKDIR /simulacrum
 
