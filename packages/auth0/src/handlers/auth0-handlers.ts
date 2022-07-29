@@ -159,7 +159,7 @@ export const createAuth0Handlers = (options: Options): Record<Routes, HttpHandle
 
       let qs = stringify({ code: encodedNonce, state, nonce });
 
-      let routerUrl = `${redirect_uri}?${qs}`;
+      let routerUrl = redirect_uri.includes('?') ? `${redirect_uri}&${qs}` : `${redirect_uri}?${qs}`;
 
       res.status(302).redirect(routerUrl);
     },

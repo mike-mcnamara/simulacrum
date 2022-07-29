@@ -221,6 +221,27 @@ describe('Auth0 simulator', () => {
 
       expect(res.status).toBe(200);
       expect(res.statusText).toBe('OK');
+      expect(res.url).toContain('?code');
+    });
+
+    it('should post to /login/callback allowing existing query params in redirect_url', function* () {
+      let copyFields = { ...Fields };
+      copyFields.redirect_uri += '?test=value';
+      let fields = encodeURIComponent(JSON.stringify({
+        ...copyFields
+      }));
+
+      let res: Response = yield fetch(`https://localhost:4400/login/callback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `wctx=${fields}`
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.statusText).toBe('OK');
+      expect(res.url).toContain('?test=value&code');
     });
   });
 
